@@ -1,0 +1,14 @@
+:inoremap jk <esc>
+let mapleader = ","
+:nnoremap <leader>a A
+:nnoremap <Space> <PageDown>
+:vnoremap <Space> <PageDown>
+:nnoremap <leader><Space> <PageUp>
+:vnoremap <leader><Space> <PageUp>
+:nnoremap <esc> :noh<esc>
+:nnoremap cc ddO
+:nnoremap <leader>c mpgg4jv$G"+y`pzz
+:nnoremap <leader>. mpggvG=`pzz
+:nnoremap <leader>n :set number!<cr>
+:nnoremap <leader>= mpggVg=`p
+:set showcmd
