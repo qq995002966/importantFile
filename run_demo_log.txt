@@ -1,0 +1,28 @@
+reating network
+*** Adding hosts:
+h1 h2
+*** Adding switches:
+s1
+*** Adding links:
+(h1, s1) (h2, s1)
+*** Configuring hosts
+h1 h2
+*** Starting controller
+
+*** Starting 1 switches
+s1 Starting P4 switch s1
+/home/mininet/documents/p4factory/targets/simple_router/behavioral-model --name
+s1 --dpid 0000000000000001 -i s1-eth1 -i s1-eth2 --listener 127.0.0.1:11111
+--pd-server 127.0.0.1:22222
+switch has been started
+
+**********
+h1
+default interface: eth0 10.0.0.10       00:04:00:00:00:00
+**********
+**********
+h2
+default interface: eth0 10.0.1.10       00:04:00:00:00:01
+**********
+Ready !
+*** Starting CLI:
