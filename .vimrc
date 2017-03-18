@@ -80,7 +80,7 @@ au FileType python let b:delimitMate_nesting_quotes = ['"']
 "au FileType mail let b:delimitMate_autoclose = 0
 
 
-Bundle 'scrooloose/syntastic'
+"Bundle 'scrooloose/syntastic'
 let g:syntastic_error_symbol='>>'
 let g:syntastic_warning_symbol='>'
 let g:syntastic_check_on_open=1
@@ -89,8 +89,14 @@ let g:syntastic_enable_highlighting=1
 let g:syntastic_python_checkers=['pyflakes'] " 使用pyflakes,速度比pylint快
 let g:syntastic_javascript_checkers = ['jsl', 'jshint']
 let g:syntastic_html_checkers=['tidy', 'jshint']
+"选择了待选的文字之后就会自动关闭 scratch窗口
+let g:ycm_autoclose_preview_window_after_insertion = 1	
+let g:ycm_autoclose_preview_window_after_completion = 1
 " 修改高亮的背景色, 适应主题
 highlight SyntasticErrorSign guifg=white guibg=black
+
+":lnext  到下一个错误
+":lprevious 到上一个错误
 
 " to see error location list
 let g:syntastic_always_populate_loc_list = 0
