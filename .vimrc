@@ -39,7 +39,7 @@ set softtabstop=4
 set shiftwidth=4 "缩进的空格
 set autoindent "自动缩进
 set nohlsearch "设置行号
-set nowrap "一行就一行别弄到第二行去
+set wrap "一行就一行别弄到第二行去
 set smartindent "开启只能自动缩进
 filetype plugin indent on "自动识别文件类型,用文件类型plugin脚本
 hi CursorLine term=bold cterm=bold guibg=Grey40
