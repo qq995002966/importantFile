@@ -92,6 +92,15 @@ alias ncdi='nmcli con down id'
 alias vv='vim ~/.vimrc'
 alias h='history'
 alias vt='vim ~/.tmux.conf'
+alias showports='sudo netstat -tunlp'
+alias cleanmn='sudo ~/documents/importantFile/clean_mn.sh'
+alias setupveth='sudo ~/documents/p4factory/tools/veth_setup.sh'
+alias pingtest='ping -c 1 www.baidu.com'
+alias pull_and_copy_figure4='git pull && cp figure4.py /home/mininet/documents/p4lang/behavioral-model/mininet/figure4.py'
+alias switch_CLI='sudo ~/documents/p4lang/behavioral-model/targets/simple_switch/sswitch_CLI'
+alias j='autojump'
+
+BMV2_PATH="/home/mininet/documents/p4lang/behavioral-model"
 
 #alias bochsf='bochs -f bochsrc'
 
