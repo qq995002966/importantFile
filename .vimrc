@@ -123,6 +123,29 @@ Bundle 'scrooloose/nerdcommenter'
 "<leader>c<space>  加上/解开注释, 智能判断
 "<leader>cy   先复制, 再注解(p可以进行黏贴)
 
+"模糊打开文件
+Bundle 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_map = '<c-p>' "模糊搜索当前目录及其子目录下的所有文件
+let g:ctrlp_cmd = 'CtrlP'
+"模糊搜索最近打开的文件
+map <leader>f :CtrlPMRU<CR>		
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
+let g:ctrlp_working_path_mode=0
+let g:ctrlp_match_window_bottom=1
+let g:ctrlp_max_height=15
+let g:ctrlp_match_window_reversed=0
+let g:ctrlp_mruf_max=500
+let g:ctrlp_follow_symlinks=1
+
+""模糊函数搜索
+"Bundle 'tacahiroy/ctrlp-funky'
+"nnoremap <c-i> :CtrlPFunky<Cr>
+"" narrow the list down with a word under cursor
+"let g:ctrlp_funky_syntax_highlight = 1
+"let g:ctrlp_extensions = ['funky']
 
 "一定要放在这里,要不然不能够变色
 :syntax on
