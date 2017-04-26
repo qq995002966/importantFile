@@ -1,2 +1,0 @@
-cp /home/mininet/documents/p4factory/targets/simple_router/build//bin/bm behavioral-model
-cp -r /home/mininet/documents/p4factory/targets/simple_router/build//thrift/* /home/mininet/documents/p4factory/targets/simple_router/tests/pd_thrift/

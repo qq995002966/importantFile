@@ -98,7 +98,8 @@ alias setupveth='sudo ~/documents/p4factory/tools/veth_setup.sh'
 alias pingtest='ping -c 1 www.baidu.com'
 alias pull_and_copy_figure4='git pull && cp figure4.py /home/mininet/documents/p4lang/behavioral-model/mininet/figure4.py'
 alias switch_CLI='sudo ~/documents/p4lang/behavioral-model/targets/simple_switch/sswitch_CLI'
-alias j='autojump'
+alias ta='tmux -2 attach -t '
+alias ts='tmux kill-session -t '
 
 BMV2_PATH="/home/mininet/documents/p4lang/behavioral-model"
 
@@ -191,6 +192,7 @@ xterm*|rxvt*)
     ;;
 esac
 
-VMWareShareFolder="/mnt/hgfs/VMWareShareFolder/"
-StudyHackFolder="/mnt/hgfs/黑客技术/"
-VIM="/usr/share/vim/"
+
+#z 快速切换快速切换目录的工具
+. /home/mininet/z/z.sh
+

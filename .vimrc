@@ -21,16 +21,17 @@ set confirm       " Need confrimation while exit
 set fileencodings=utf-8,gb18030,gbk,big5
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 "myself configuration
-:inoremap jk <esc>
+:inoremap	jk <esc>
 let mapleader = ","
-:nnoremap <space> <PageDown>
-:vnoremap <space> <PageDown>
-:nnoremap <leader><space> <PageUp>
-:vnoremap <leader><space> <PageUp>
-:nnoremap <leader>c mpgg4jv$G"+y`pzz
-:nnoremap <leader>= mpggvG=`pzz
-:nnoremap <leader>n :set number!<cr>
-:nnoremap <leader>p viwp
+:nnoremap	<space> <PageDown>
+:vnoremap	<space> <PageDown>
+:nnoremap	<leader><space> <PageUp>
+:vnoremap	<leader><space> <PageUp>
+:nnoremap	<leader>c mpgg4jv$G"+y`pzz
+:nnoremap	<leader>= mpggvG=`pzz
+:nnoremap	<leader>n :set number!<cr>
+:nnoremap	<leader>p viwp
+:nnoremap	<M-left>	:bn <cr>
 set relativenumber
 set number
 set backspace=2
