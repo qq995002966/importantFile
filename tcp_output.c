@@ -719,9 +719,11 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
 	//注意这个函数是给已经建立起来连接的包设置options的
 	//如果下个版本想通过proc文件系统来控制次行为，需要在这里改
 	//
-	opts->options|=OPTION_SW;
-	opts->snd_cwnd=tp->snd_cwnd;
-	size += TCPOLEN_SW_ALIGNED;
+	if(sock_net(sk)->ipv4.sysctl_tcp_sw==1){
+		opts->options|=OPTION_SW;
+		opts->snd_cwnd=tp->snd_cwnd;
+		size += TCPOLEN_SW_ALIGNED;
+	}
 
 
 	return size;

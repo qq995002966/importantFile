@@ -25,6 +25,8 @@ set fileencodings=utf-8,gb18030,gbk,big5
 let mapleader = ","
 :nnoremap	<space> <PageDown>
 :vnoremap	<space> <PageDown>
+:nnoremap	<tab> <PageUp>
+:vnoremap	<tab> <PageUp>
 :nnoremap	<leader><space> <PageUp>
 :vnoremap	<leader><space> <PageUp>
 :nnoremap	<leader>c mpgg4jv$G"+y`pzz
