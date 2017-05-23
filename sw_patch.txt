@@ -1,0 +1,134 @@
+diff --git a/linux-3.19/include/net/netns/ipv4.h b/linux-3.19-modified/include/net/netns/ipv4.h
+index 0ffef1a..61e702f 100644
+--- a/linux-3.19/include/net/netns/ipv4.h
++++ b/linux-3.19-modified/include/net/netns/ipv4.h
+@@ -75,6 +75,7 @@ struct netns_ipv4 {
+ 	struct local_ports ip_local_ports;
+ 
+ 	int sysctl_tcp_ecn;
++	int sysctl_tcp_sw;
+ 	int sysctl_ip_no_pmtu_disc;
+ 	int sysctl_ip_fwd_use_pmtu;
+ 	int sysctl_ip_nonlocal_bind;
+diff --git a/linux-3.19/net/ipv4/sysctl_net_ipv4.c b/linux-3.19-modified/net/ipv4/sysctl_net_ipv4.c
+index e0ee384..dd70e0e 100644
+--- a/linux-3.19/net/ipv4/sysctl_net_ipv4.c
++++ b/linux-3.19-modified/net/ipv4/sysctl_net_ipv4.c
+@@ -828,6 +828,13 @@ static struct ctl_table ipv4_net_table[] = {
+ 		.proc_handler	= proc_dointvec
+ 	},
+ 	{
++		.procname	= "tcp_sw",
++		.data		= &init_net.ipv4.sysctl_tcp_sw,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec
++	},
++	{
+ 		.procname	= "ip_local_port_range",
+ 		.maxlen		= sizeof(init_net.ipv4.ip_local_ports.range),
+ 		.data		= &init_net.ipv4.ip_local_ports.range,
+diff --git a/linux-3.19/net/ipv4/tcp_ipv4.c b/linux-3.19-modified/net/ipv4/tcp_ipv4.c
+index d22f544..10696a2 100644
+--- a/linux-3.19/net/ipv4/tcp_ipv4.c
++++ b/linux-3.19-modified/net/ipv4/tcp_ipv4.c
+@@ -2457,6 +2457,7 @@ static int __net_init tcp_sk_init(struct net *net)
+ 		*per_cpu_ptr(net->ipv4.tcp_sk, cpu) = sk;
+ 	}
+ 	net->ipv4.sysctl_tcp_ecn = 2;
++	net->ipv4.sysctl_tcp_sw = 0;
+ 	return 0;
+ 
+ fail:
+diff --git a/linux-3.19/net/ipv4/tcp_output.c b/linux-3.19-modified/net/ipv4/tcp_output.c
+index 65caf8b..881efb3 100644
+--- a/linux-3.19/net/ipv4/tcp_output.c
++++ b/linux-3.19-modified/net/ipv4/tcp_output.c
+@@ -423,6 +423,10 @@ static inline bool tcp_urg_mode(const struct tcp_sock *tp)
+ #define OPTION_TS		(1 << 1)
+ #define OPTION_MD5		(1 << 2)
+ #define OPTION_WSCALE		(1 << 3)
++//这个标志是为了做实验用的，目的是让所有的TCP包把当前的
++//发送窗口通过TCP options发送出去，这样中间网络设备可以得知
++//源点的发送窗口，从而在发生拥塞的时候方便抑制源点
++#define OPTION_SW			(1<<4)
+ #define OPTION_FAST_OPEN_COOKIE	(1 << 8)
+ 
+ struct tcp_out_options {
+@@ -431,6 +435,7 @@ struct tcp_out_options {
+ 	u8 ws;			/* window scale, 0 to disable */
+ 	u8 num_sack_blocks;	/* number of SACK blocks to include */
+ 	u8 hash_size;		/* bytes in hash_location */
++	u32 snd_cwnd;
+ 	__u8 *hash_location;	/* temporary pointer, overloaded */
+ 	__u32 tsval, tsecr;	/* need to include OPTION_TS */
+ 	struct tcp_fastopen_cookie *fastopen_cookie;	/* Fast open cookie */
+@@ -499,6 +504,15 @@ static void tcp_options_write(__be32 *ptr, struct tcp_sock *tp,
+ 			       opts->ws);
+ 	}
+ 
++	if(likely(options&OPTION_SW)){//********************
++		*ptr++ = htonl((TCPOPT_NOP<<24)|
++				(TCPOPT_NOP<<16)|
++				(TCPOPT_SW<<8)|
++				(TCPOLEN_SW)
++				);
++		*ptr++ = htonl(opts->snd_cwnd);
++	}
++
+ 	if (unlikely(opts->num_sack_blocks)) {
+ 		struct tcp_sack_block *sp = tp->rx_opt.dsack ?
+ 			tp->duplicate_sack : tp->selective_acks;
+@@ -533,6 +547,7 @@ static void tcp_options_write(__be32 *ptr, struct tcp_sock *tp,
+ 		}
+ 		ptr += (foc->len + 3) >> 2;
+ 	}
++
+ }
+ 
+ /* Compute TCP options for SYN packets. This is not the final
+@@ -701,6 +716,16 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
+ 			opts->num_sack_blocks * TCPOLEN_SACK_PERBLOCK;
+ 	}
+ 
++	//注意这个函数是给已经建立起来连接的包设置options的
++	//如果下个版本想通过proc文件系统来控制次行为，需要在这里改
++	//
++	if(sock_net(sk)->ipv4.sysctl_tcp_sw==1){
++		opts->options|=OPTION_SW;
++		opts->snd_cwnd=tp->snd_cwnd;
++		size += TCPOLEN_SW_ALIGNED;
++	}
++
++
+ 	return size;
+ }
+ 
+diff --git a/linux-3.19/include/net/tcp.h b/linux-3.19-modified/include/net/tcp.h
+index 9d9111e..14dcbc4 100644
+--- a/linux-3.19/include/net/tcp.h
++++ b/linux-3.19-modified/include/net/tcp.h
+@@ -171,6 +171,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo);
+ #define TCPOPT_WINDOW		3	/* Window scaling */
+ #define TCPOPT_SACK_PERM        4       /* SACK Permitted */
+ #define TCPOPT_SACK             5       /* SACK Block */
++#define TCPOPT_SW				10		//
+ #define TCPOPT_TIMESTAMP	8	/* Better RTT estimations/PAWS */
+ #define TCPOPT_MD5SIG		19	/* MD5 Signature (RFC2385) */
+ #define TCPOPT_EXP		254	/* Experimental */
+@@ -189,6 +190,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo);
+ #define TCPOLEN_TIMESTAMP      10
+ #define TCPOLEN_MD5SIG         18
+ #define TCPOLEN_EXP_FASTOPEN_BASE  4
++#define TCPOLEN_SW				6//这个才是实际的选项的大小，下面那个大小是为了对齐
+ 
+ /* But this is what stacks really send out. */
+ #define TCPOLEN_TSTAMP_ALIGNED		12
+@@ -199,6 +201,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo);
+ #define TCPOLEN_SACK_PERBLOCK		8
+ #define TCPOLEN_MD5SIG_ALIGNED		20
+ #define TCPOLEN_MSS_ALIGNED		4
++#define TCPOLEN_SW_ALIGNED			8//虽然我们设计的这个选项大小为6，但是这里并不是选项大小，而是对齐之后的大小
+ 
+ /* Flags in tp->nonagle */
+ #define TCP_NAGLE_OFF		1	/* Nagle's algo is disabled */
