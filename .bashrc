@@ -196,5 +196,5 @@ esac
 
 
 #z 快速切换快速切换目录的工具
-. /home/mininet/z/z.sh
+. /home/mininet/documents/importantFile/z/z.sh
 
