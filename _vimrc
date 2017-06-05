@@ -154,11 +154,12 @@ let g:ctrlp_follow_symlinks=1
 "let g:ctrlp_funky_syntax_highlight = 1
 "let g:ctrlp_extensions = ['funky']
 
-:set guioptions -=m 
 "Removes the menubar.
-
-:set guioptions -=T
+:set guioptions -=m 
 "Removes the toolbar.
+:set guioptions -=T
+"设置字体
+:set guifont=Consolas:h11
 
 "一定要放在这里,要不然不能够变色
 :syntax on
