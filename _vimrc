@@ -1,251 +1,165 @@
 set nocompatible
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
-behave mswin
 
-set diffexpr=MyDiff()
-function! MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
+"Highlight current line"
+au WinLeave * set nocursorline nocursorcolumn
+au WinEnter * set cursorline "cursorcolumn
+set cursorline "cursorcolumn
 
-set lines=22
-winpos 600 200
 
-set relativenumber
 
-"from there is my own configuration
-let mapleader = ","	"set mapleader
-:inoremap jk <esc>	"map jk to <esc> key
-:nnoremap <leader>n :set number!<cr>	"map <leader>N to toggle number
-:nnoremap <leader>a A
-:colorscheme molokai	"set colorscheme
-syntax enable		"enabel syntax
-syntax on
-set guifont=consolas:h11
-set tags=tags;		"set tags enale
-set autochdir
-
+set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
 set nowritebackup
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
+set history=50
+"set ruler         " show the cursor position all the time
+set showcmd       " display incomplete commands
+set incsearch     " do incremental searching
+set laststatus=2  " Always display the status line
+set autowrite     " Automatically :write before running commands
+set confirm       " Need confrimation while exit
+set fileencodings=utf-8,gb18030,gbk,big5
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"myself configuration
+:inoremap jk <esc>
+let mapleader = ","
+:nnoremap <space> <PageDown>
+:vnoremap <space> <PageDown>
+:nnoremap <tab> <PageUp>
+:vnoremap <tab> <PageUp>
+:nnoremap <leader><space> <PageUp>
+:vnoremap <leader><space> <PageUp>
+:nnoremap <leader>c mpgg4jv$G"+y`pzz
+:nnoremap <leader>= mpggvG=`pzz
+:nnoremap <leader>n :set number!<cr>
+:nnoremap <leader>p viwp
+:nnoremap <M-left>  :bn <cr>
+set relativenumber
+set number
+set backspace=2
+set tabstop=4 "制表符的宽度
+set softtabstop=4
+set shiftwidth=4 "缩进的空格
+set autoindent "自动缩进
+set nohlsearch "设置行号
+set wrap "一行就一行别弄到第二行去
+set smartindent "开启只能自动缩进
+filetype plugin indent on "自动识别文件类型,用文件类型plugin脚本
+hi CursorLine term=bold cterm=bold guibg=Grey40
 
-let Tlist_Show_One_File = 1		"Tlist configuration
-let Tlist_exit_OnlyWindows = 1
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
-let g:winManagerWindowLayout = 'FileExplorer|TagList'	"WindowManager Configuration
-:nmap <leader>w :WMToggle<cr>
 
-let g:miniBufExplMapCTabSwithBufs = 1		"nimiBufExpl Configuration
-let g:miniBufExplMapWindowsNavVim = 1
-let g:miniBufExplMapWindowNavArrows = 1
 
-"set encoding = utf-8 			"resovle chinese garbled 
-"set termencoding = utf-8		"but through test, after add such code
-"set fileencodings = utf-8,chinese,lantin-1		"the chinese will
-"if has("win32")		"become garbled,so I decide to annotate it
-"	set fileencoding = chinese
-"else
-"	set fileencoding = utf-8
-"endif
-"language messages zh_CN.utf-8
-""""""""""""""""""""""""""""""""""""""""""
-:"from here on,I copy it form ubuntu ~/.vimrc
-:set cul		"highlight current line
-:set shortmess =atI
-:set go =
-:set ruler
-:set showcmd
-:set scrolloff=5
-:set autoindent
-:set cindent
-:set tabstop=4
-:set softtabstop=4
-:set shiftwidth=4
-:filetype on
-:filetype plugin on
-:filetype indent on
-:set viminfo+=!
-:set iskeyword+=_,$,@,%,#,-
-:set tw=0
-:"add some my KEYMAP
-imap <c-u> <esc>mjbveU`j:delmarks j<cr>a
-:nnoremap <Space> <PageDown>
-:nnoremap <leader><Space> <PageUp>
-:nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-:nnoremap <leader>sv :source $MYVIMRC<cr>
-:nnoremap <esc> :noh<esc>
-:nnoremap ci, :call ChangeInComma()<cr>
-func! ChangeInComma()
-	if getline(".")[col(".")-1]==','
-		exec "normal l"
-	endif
-
-	exec "normal! F,dt,i,\<esc>a"
-endfunc
-"that's,123,456,789
-nnoremap <kPlus> <C-a>
-nnoremap <kMinus> <C-x>
-"
-:imap -" """"""""""""""""""""""""""""""""""""<esc>o
-:imap -// /////////////////////////////////////////////<esc>o
-
-:inoremap <c-p> <esc>mj0i//<esc>`j<esc>:delmarks j<cr>lla
-:nnoremap -/ mj0i//<esc>`j<esc>ll
-:nnoremap <leader>w <c-w>
-:nnoremap <leader>c :call ChangeAWord()<cr>
-func! ChangeAWord()
-	if getline(".")[col(".")-1]==' '
-		exec "normal! hcaw "
-	endif
-		exec "normal! caw"
-endfunc
-"test ChangeAWord 
-autocmd BufNewFile *.cpp,*.[ch],*.sh,*.rb,*.java,*.py exec ":call SetTitle()"
-function! SetTitle()
-	if &filetype == 'sh'
-		call setline(1,"#!/bin/bash")
-		call append(line(".","")
-	elseif &filetype == 'python'
-		call setline(1,"#!/usr/bin/env python")
-		call append(line("."),"# coding=utf-8")
-		call append(line(".")+1,"")
-	elseif &filetype == 'ruby'
-		call setline(1,"#!/usr/bin/env ruby")
-		call append(line("."),"# encoding: utf-8")
-		call append(line(".")+1,"")
-    else 
-        call setline(1, "/*************************************************************************") 
-        call append(line("."), "	> File Name: ".expand("%")) 
-        call append(line(".")+1, "	> Author: ") 
-        call append(line(".")+2, "	> Mail: ") 
-        call append(line(".")+3, "	> Created Time: ".strftime("%c")) 
-        call append(line(".")+4, " ************************************************************************/") 
-        call append(line(".")+5, "")
-    endif
-    if expand("%:e") == 'cpp'
-        call append(line(".")+6, "#include<iostream>")
-        call append(line(".")+7, "using namespace std;")
-        call append(line(".")+8, "")
-    endif
-    if &filetype == 'c'
-        call append(line(".")+6, "#include<stdio.h>")
-        call append(line(".")+7, "")
-    endif
-    if expand("%:e") == 'h'
-        call append(line(".")+6, "#ifndef _".toupper(expand("%:r"))."_H")
-        call append(line(".")+7, "#define _".toupper(expand("%:r"))."_H")
-        call append(line(".")+8, "#endif")
-    endif
-    if &filetype == 'java'
-        call append(line(".")+6,"public class ".expand("%:r"))
-        call append(line(".")+7,"")
-    endif
-    "�½��ļ����Զ���λ���ļ�ĩβ
-endfunc 
-autocmd BufNewFile * normal G
-
-"C��C++ ��F5��������
-map <F5> :call CompileRunGcc()<CR>
-func! CompileRunGcc()
-	echo "CompileRunGcc"
-    exec "w"
-    if &filetype == 'c'
-        exec "!g++ % -o %<"
-        exec "! ./%<"
-    elseif &filetype == 'cpp'
-        exec "!g++ % -o %<"
-        exec "! ./%<"
-    elseif &filetype == 'java' 
-        exec "!javac %" 
-        exec "!java %<"
-    elseif &filetype == 'sh'
-        :!./%
-    endif
-endfunc
-"C,C++�ĵ���
-map <F8> :call Rungdb()<CR>
-func! Rungdb()
-    exec "w"
-    exec "!g++ % -g -o %<"
-    exec "!gdb ./%<"
-endfunc
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-:nnoremap <silent> <leader>t <esc>:Tlist<RETURN>
-:map <c-a> ggvG$"+y
-:nnoremap <leader>f gg=G
-
-set autoread
-"set eop=preview,menu
-set nobackup		
-set noswapfile
-
-"use bundle to manage plungins
-filetype off  
-" �˴��涨Vundle��·��  
+"if you want to use bundle the the follow line is necessary
+filetype off
+" 此处规定Vundle的路径  
 set rtp+=$VIM/vimfiles/bundle/vundle/  
 call vundle#rc('$VIM/vimfiles/bundle/')  
 Bundle 'gmarik/vundle'  
 filetype plugin indent on 
 
 
-" Define bundles via Github repos
-Bundle 'christoomey/vim-run-interactive'
+"auto complete plugin, comment on windows
 "Bundle 'Valloric/YouCompleteMe'
-Bundle 'croaky/vim-colors-github'
-Bundle 'danro/rename.vim'
-Bundle 'majutsushi/tagbar'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'kien/ctrlp.vim'
-Bundle 'pbrisbin/vim-mkdir'
-Bundle 'scrooloose/syntastic'
-Bundle 'slim-template/vim-slim'
-Bundle 'thoughtbot/vim-rspec'
-Bundle 'tpope/vim-bundler'
-Bundle 'tpope/vim-endwise'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-surround'
-Bundle 'vim-ruby/vim-ruby'
-Bundle 'vim-scripts/ctags.vim'
-Bundle 'vim-scripts/matchit.zip'
-Bundle 'vim-scripts/tComment'
-Bundle "mattn/emmet-vim"
-Bundle "scrooloose/nerdtree"
+"and its config
+
 Bundle "Lokaltog/vim-powerline"
-Bundle "godlygeek/tabular"
-Bundle "msanders/snipmate.vim"
-Bundle "jelera/vim-javascript-syntax"
-Bundle "altercation/vim-colors-solarized"
-Bundle "othree/html5.vim"
-Bundle "xsbeats/vim-blade"
-Bundle "Raimondi/delimitMate"
-Bundle "groenewege/vim-less"
-Bundle "evanmiller/nginx-vim-syntax"
-Bundle "Lokaltog/vim-easymotion"
+"vim-poerline comfig
+set laststatus=2
+set t_Co=256
+set encoding=utf8
+
 Bundle "tomasr/molokai"
 Bundle "klen/python-mode"
-"
+
+" 自动补全单引号，双引号等
+Bundle 'Raimondi/delimitMate'
+
+" for python docstring ", 特别有用
+au FileType python let b:delimitMate_nesting_quotes = ['"']
+" 关闭某些类型文件的自动补全
+"au FileType mail let b:delimitMate_autoclose = 0
 
 
-"
+"Bundle 'scrooloose/syntastic'
+let g:syntastic_error_symbol='>>'
+let g:syntastic_warning_symbol='>'
+let g:syntastic_check_on_open=1
+let g:syntastic_check_on_wq=0
+let g:syntastic_enable_highlighting=1
+let g:syntastic_python_checkers=['pyflakes'] " 使用pyflakes,速度比pylint快
+let g:syntastic_javascript_checkers = ['jsl', 'jshint']
+let g:syntastic_html_checkers=['tidy', 'jshint']
+"选择了待选的文字之后就会自动关闭 scratch窗口
+let g:ycm_autoclose_preview_window_after_insertion = 1  
+let g:ycm_autoclose_preview_window_after_completion = 1
+" 修改高亮的背景色, 适应主题
+highlight SyntasticErrorSign guifg=white guibg=black
+
+":lnext  到下一个错误
+":lprevious 到上一个错误
+
+" to see error location list
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_loc_list_height = 5
+function! ToggleErrors()
+    let old_last_winnr = winnr('$')
+    lclose
+    if old_last_winnr == winnr('$')
+        " Nothing was closed, open syntastic error location panel
+        Errors
+    endif
+endfunction
+nnoremap <Leader>s :call ToggleErrors()<cr>
+" nnoremap <Leader>sn :lnext<cr>
+" nnoremap <Leader>sp :lprevious<cr>
+
+"自动添加注释的插件
+Bundle 'scrooloose/nerdcommenter'
+"下面的这些都是默认的配置
+"<leader>cc   加注释
+"<leader>cu   解开注释
+
+"<leader>c<space>  加上/解开注释, 智能判断
+"<leader>cy   先复制, 再注解(p可以进行黏贴)
+
+"模糊打开文件
+Bundle 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_map = '<c-p>' "模糊搜索当前目录及其子目录下的所有文件
+let g:ctrlp_cmd = 'CtrlP'
+"模糊搜索最近打开的文件
+map <leader>f :CtrlPMRU<CR>   
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
+let g:ctrlp_working_path_mode=0
+let g:ctrlp_match_window_bottom=1
+let g:ctrlp_max_height=15
+let g:ctrlp_match_window_reversed=0
+let g:ctrlp_mruf_max=500
+let g:ctrlp_follow_symlinks=1
+
+
+""模糊函数搜索
+"Bundle 'tacahiroy/ctrlp-funky'
+"nnoremap <c-i> :CtrlPFunky<Cr>
+"" narrow the list down with a word under cursor
+"let g:ctrlp_funky_syntax_highlight = 1
+"let g:ctrlp_extensions = ['funky']
+
+:set guioptions -=m 
+"Removes the menubar.
+
+:set guioptions -=T
+"Removes the toolbar.
+
+"一定要放在这里,要不然不能够变色
+:syntax on
+colorscheme molokai
