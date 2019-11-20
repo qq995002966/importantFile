@@ -153,3 +153,5 @@ let g:ctrlp_follow_symlinks=1
 "一定要放在这里,要不然不能够变色
 :syntax on
 colorscheme molokai
+
+"git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
