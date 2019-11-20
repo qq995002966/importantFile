@@ -62,7 +62,7 @@ call vundle#rc()
 
 
 "auto complete plugin
-Bundle 'Valloric/YouCompleteMe'
+"Bundle 'Valloric/YouCompleteMe'
 "and its config
 
 Bundle "Lokaltog/vim-powerline"
@@ -72,7 +72,7 @@ set t_Co=256
 set encoding=utf8
 
 Bundle "tomasr/molokai"
-Bundle "klen/python-mode"
+"Bundle "klen/python-mode"
 
 " 自动补全单引号，双引号等
 Bundle 'Raimondi/delimitMate'

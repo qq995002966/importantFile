@@ -80,6 +80,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
+alias du='du -skxh'
+alias removecore='sudo rm -rf /usr/lib/sysstat/croe*'
+alias allowlogin='cat ~/project/log/solo/game.log | grep Allow'
+alias de='sudo docker exec -it dm57_jiangjinhao bash'
+alias fo='cd $(python3 ~/documents/get_path.py $(fzf --height 40% --reverse))'
+alias fv='vim $(fzf --height 40% --reverse)'
+alias docker='sudo docker'
+alias f='fzf --height 40% --reverse'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -196,5 +204,7 @@ esac
 
 
 #z 快速切换快速切换目录的工具
-. /home/mininet/documents/importantFile/z/z.sh
+. ~/documents/importantFile/z/z.sh
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
